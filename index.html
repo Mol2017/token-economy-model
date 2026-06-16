@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Token Economy Model — 2030</title>
+<style>
+  :root{
+    --bg:#0b0e14; --card:#141925; --card2:#1b2230; --line:#2a3344;
+    --txt:#e6ebf2; --dim:#8a96aa; --accent:#5eead4; --accent2:#7dd3fc;
+    --demand:#a78bfa; --compute:#7dd3fc; --phys:#fb923c;
+    --gold:#f5c451; --actual:#34d399; --warn:#f87171; --ok:#4ade80;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,#0b0e14,#0d1119);color:var(--txt);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5;padding:0 0 80px}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+  header{padding:38px 0 14px}
+  h1{font-size:30px;margin:0 0 6px;letter-spacing:-.5px}
+  h1 .g{background:linear-gradient(90deg,var(--demand),var(--compute),var(--phys));
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .sub{color:var(--dim);font-size:15px;max-width:760px}
+  .presets{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 6px}
+  .presets button{background:var(--card2);color:var(--txt);border:1px solid var(--line);
+    padding:8px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;transition:.15s}
+  .presets button:hover{border-color:var(--accent);color:var(--accent)}
+  .presets .lbl{color:var(--dim);font-size:12px;align-self:center;margin-right:4px}
+  .section{background:var(--card);border:1px solid var(--line);border-radius:16px;
+    margin:18px 0;overflow:hidden}
+  .shead{padding:16px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}
+  .badge{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;
+    font-weight:800;font-size:15px;color:#0b0e14}
+  .s1 .badge{background:var(--demand)} .s2 .badge{background:var(--compute)} .s3 .badge{background:var(--phys)}
+  .s0 .badge{background:var(--accent)}
+  .abody{padding:6px 22px 18px}
+  .assume{display:flex;gap:13px;padding:13px 0;border-bottom:1px solid var(--line)}
+  .assume:last-child{border-bottom:none}
+  .assume .amark{flex:0 0 auto;width:9px;height:9px;border-radius:50%;background:var(--accent);
+    margin-top:6px;box-shadow:0 0 0 4px rgba(94,234,212,.12)}
+  .assume p{margin:0;font-size:14px;color:var(--dim)}
+  .assume b{color:var(--txt)}
+  .ctable{width:100%;border-collapse:collapse;font-size:13px;margin-top:4px;font-variant-numeric:tabular-nums}
+  .ctable th{color:var(--dim);font-weight:600;text-align:right;padding:6px 3px;border-bottom:1px solid var(--line);
+    font-size:10.5px;text-transform:uppercase;letter-spacing:.3px}
+  .ctable th:first-child{text-align:left}
+  .ctable td{padding:8px 3px;border-bottom:1px solid var(--line);text-align:right;color:var(--txt)}
+  .ctable td:first-child{text-align:left;font-weight:700}
+  .ctable tr:last-child td{border-bottom:none}
+  .ctable tr.sel td{background:rgba(125,211,252,.09)}
+  .cbind-hbm{color:var(--phys);font-weight:700} .cbind-gpu{color:var(--compute);font-weight:700}
+  .shead h2{font-size:18px;margin:0}
+  .shead .tag{color:var(--dim);font-size:13px;margin-left:auto}
+  .sbody{display:grid;grid-template-columns:1.15fr .85fr;gap:0}
+  .s1 .sbody{grid-template-columns:.82fr 1.18fr}
+  @media(max-width:820px){.sbody,.s1 .sbody{grid-template-columns:1fr}}
+  .inputs{padding:18px 22px;border-right:1px solid var(--line)}
+  @media(max-width:820px){.inputs{border-right:none;border-bottom:1px solid var(--line)}}
+  .outputs{padding:18px 22px;background:var(--card2)}
+  .ctrl{margin:13px 0}
+  .ctrl .row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
+  .ctrl label{font-size:13px;color:var(--dim)}
+  .ctrl .val{font-size:14px;font-weight:700;font-variant-numeric:tabular-nums}
+  .ctrl.hero label{font-size:14px;color:var(--txt);font-weight:600}
+  .ctrl.hero .val{font-size:20px;color:var(--demand)}
+  .ctrl.hero input[type=range]{height:7px}
+  input[type=range]{width:100%;-webkit-appearance:none;height:5px;border-radius:5px;
+    background:var(--line);outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;
+    border-radius:50%;background:var(--accent);cursor:pointer;border:2px solid #0b0e14}
+  input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;
+    background:var(--accent);cursor:pointer;border:2px solid #0b0e14}
+  .ctrl.hero input[type=range]::-webkit-slider-thumb{width:20px;height:20px}
+  .s1 input[type=range]::-webkit-slider-thumb{background:var(--demand)}
+  .s2 input[type=range]::-webkit-slider-thumb{background:var(--compute)}
+  .s3 input[type=range]::-webkit-slider-thumb{background:var(--phys)}
+  .chips{display:flex;gap:6px;margin-top:6px}
+  .chips button{flex:1;background:var(--card);border:1px solid var(--line);color:var(--dim);
+    padding:9px 6px;border-radius:8px;cursor:pointer;display:flex;flex-direction:column;gap:2px;
+    line-height:1.25;text-align:center}
+  .chips button b{color:var(--txt);font-size:13px}
+  .chips button span{font-size:10px}
+  .chips button.on{border-color:var(--compute);color:var(--compute);background:#10202e}
+  .chips button.on b{color:var(--compute)}
+  .chips .st{font-size:9px;font-style:normal;text-transform:uppercase;letter-spacing:.4px;
+    padding:1px 6px;border-radius:20px;margin-top:3px;align-self:center}
+  .chips .st.mat{background:rgba(74,222,128,.14);color:var(--ok)}
+  .chips .st.ramp{background:rgba(245,196,81,.16);color:var(--gold)}
+  .grp{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--dim);
+    margin:18px 0 2px;border-top:1px dashed var(--line);padding-top:12px}
+  .grp:first-child{border-top:none;padding-top:0;margin-top:4px}
+  .big{font-size:30px;font-weight:800;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+  .big.demand{color:var(--demand)} .big.compute{color:var(--compute)} .big.phys{color:var(--phys)}
+  .olabel{font-size:12px;color:var(--dim);text-transform:uppercase;letter-spacing:.6px;margin-top:14px}
+  .orow{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line);
+    font-size:14px;font-variant-numeric:tabular-nums}
+  .orow:last-child{border-bottom:none}
+  .orow .k{color:var(--dim)} .orow .v{font-weight:700}
+  .note{font-size:12.5px;color:var(--dim);margin-top:14px;padding:10px 12px;background:#0e1320;
+    border-radius:8px;border:1px solid var(--line)}
+  .note b{color:var(--txt)}
+  /* chart */
+  .chartwrap{position:relative;width:100%;height:340px}
+  #chart{width:100%;height:100%;display:block}
+  .legend{display:flex;gap:18px;margin-bottom:6px;font-size:12px;color:var(--dim);flex-wrap:wrap}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .swatch{width:18px;height:0;border-top:3px solid}
+  .swatch.you{border-color:var(--demand)}
+  .swatch.gold{border-top-style:dashed;border-color:var(--gold)}
+  .swatch.actual{border-color:var(--actual)}
+  .flow{text-align:center;color:var(--dim);font-size:20px;margin:-6px 0}
+  .verdict{background:linear-gradient(135deg,#16121f,#101a1f);border:1px solid var(--line);
+    border-radius:16px;padding:22px;margin-top:20px}
+  .verdict h3{margin:0 0 10px;font-size:16px}
+  .pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:12px;font-weight:700;margin-left:6px}
+  .pill.ok{background:#0f2a1a;color:var(--ok)} .pill.warn{background:#2a1414;color:var(--warn)}
+  .foot{color:var(--dim);font-size:12px;margin-top:26px;text-align:center}
+  code{background:#0e1320;padding:1px 5px;border-radius:4px;font-size:12px;color:var(--accent2)}
+  a{color:var(--accent2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>The <span class="g">Token Economy</span> Model</h1>
+  <div class="sub">A Fermi model of the global AI compute stack. Set how fast demand grows to 2030,
+  and watch it flow through the physics — tokens → GPUs → HBM, power &amp; the manufacturing limits that gate the buildout.</div>
+  <div class="presets">
+    <span class="lbl">Scenarios:</span>
+    <button onclick="preset('base')">2026 baseline</button>
+    <button onclick="preset('low')">2030 · 10× (lower)</button>
+    <button onclick="preset('gs')">2030 · 24× Goldman</button>
+    <button onclick="preset('gs30')">Goldman · 30% MFU</button>
+  </div>
+</header>
+
+<!-- SECTION 0: ASSUMPTIONS -->
+<div class="section s0">
+  <div class="shead"><div class="badge">0</div><h2>Assumptions</h2>
+    <span class="tag">the premises everything rests on</span></div>
+  <div class="abody">
+    <div class="assume"><span class="amark"></span>
+      <p><b>AI adoption is mandatory, not optional.</b> AI may not make a company more profitable, but any
+      company that refuses to use it gets out-competed and dies — just as every business was eventually
+      forced onto the personal computer. So adoption spreads to nearly everyone regardless of payoff, and
+      token demand keeps climbing toward full penetration.</p></div>
+    <div class="assume"><span class="amark"></span>
+      <p><b>No breakthrough in video or physical AI.</b> We assume self-driving, robotics, and other
+      real-world AI see no major leap by 2030. AI stays focused on text, code, and background software agents
+      — workloads far lighter on memory than streaming 24/7 video would be. The bottleneck stays raw compute
+      (reading the prompt), not memory bandwidth.</p></div>
+  </div>
+</div>
+<div class="flow">↓</div>
+
+<!-- SECTION 1: DEMAND -->
+<div class="section s1">
+  <div class="shead"><div class="badge">1</div><h2>Token Demand</h2>
+    <span class="tag">how big does the pie get by 2030?</span></div>
+  <div class="sbody">
+    <div class="inputs">
+      <div class="ctrl hero"><div class="row"><label>2030 growth multiplier</label><span class="val" id="v_mult"></span></div>
+        <input type="range" id="mult" min="1" max="50" step="0.5" value="24"></div>
+      <div class="ctrl"><div class="row"><label>Input vs Output tokens</label><span class="val" id="v_inshare"></span></div>
+        <input type="range" id="inshare" min="50" max="99" step="1" value="95"></div>
+
+      <div class="olabel">2030 daily demand</div>
+      <div class="big demand" id="o_total"></div>
+      <div class="orow"><span class="k">Implied growth rate</span><span class="v" id="o_cagr"></span></div>
+      <div class="orow"><span class="k">Input tokens / day</span><span class="v" id="o_in"></span></div>
+      <div class="orow"><span class="k">Output tokens / day</span><span class="v" id="o_out"></span></div>
+    </div>
+    <div class="outputs">
+      <div class="legend">
+        <span><i class="swatch actual"></i> Reported 2023–25 (actual)</span>
+        <span><i class="swatch you"></i> Your projection</span>
+        <span><i class="swatch gold"></i> Goldman projection (24×)</span>
+      </div>
+      <div class="chartwrap"><canvas id="chart"></canvas></div>
+    </div>
+  </div>
+</div>
+<div class="flow">↓</div>
+
+<!-- SECTION 2: COMPUTE -->
+<div class="section s2">
+  <div class="shead"><div class="badge">2</div><h2>GPUs + HBMs</h2>
+    <span class="tag">tokens × FLOPs ÷ chip → fleet, memory &amp; build time</span></div>
+  <div class="sbody">
+    <div class="inputs">
+      <div class="grp">Model</div>
+      <div class="ctrl"><div class="row"><label>Active params (B) — MoE</label><span class="val" id="v_params"></span></div>
+        <input type="range" id="params" min="20" max="2000" step="10" value="500"></div>
+      <div class="note" style="margin-top:6px">2030 frontier model. The <b>500B</b> default is the active-parameter
+      size assumed for <b>Claude Fable 5</b> — a sparse MoE, so only the active params run per token.</div>
+
+      <div class="grp">Utilization</div>
+      <div class="ctrl"><div class="row"><label>MFU — utilization</label><span class="val" id="v_mfu"></span></div>
+        <input type="range" id="mfu" min="10" max="90" step="5" value="50"></div>
+      <div class="ctrl"><div class="row"><label>Inference vs Training</label><span class="val" id="v_infshare"></span></div>
+        <input type="range" id="infshare" min="30" max="95" step="1" value="65"></div>
+
+      <div class="grp">GPU</div>
+      <div class="chips" id="chipsel">
+        <button data-tf="3958" data-tdp="0.7" data-gpuprod="23"><b>H100</b><span>3,958 TFLOPS · FP8</span><span>80 GB · 6×HBM3</span><em class="st mat">mature</em></button>
+        <button data-tf="9000" data-tdp="1.0" data-gpuprod="5"><b>B200</b><span>9,000 TFLOPS · FP4</span><span>192 GB · 8×HBM3E</span><em class="st mat">mature</em></button>
+        <button data-tf="50000" data-tdp="2.0" data-gpuprod="2" class="on"><b>Rubin</b><span>50,000 TFLOPS · FP4</span><span>288 GB · 8×HBM4</span><em class="st ramp">ramp-up</em></button>
+      </div>
+
+      <div class="grp">Production capacity (per year)</div>
+      <div class="ctrl"><div class="row"><label>TSMC packaging — selected GPU (M / yr)</label><span class="val" id="v_gpuprod"></span></div>
+        <input type="range" id="gpuprod" min="1" max="30" step="1" value="2"></div>
+      <div class="ctrl"><div class="row"><label>HBM stacks / yr — selected GPU</label><span class="val" id="v_hbmprod"></span></div>
+        <input type="range" id="hbmprod" min="1" max="120" step="1" value="2"></div>
+    </div>
+    <div class="outputs">
+      <div class="olabel">GPUs needed — <span id="o_chipname">Rubin</span></div>
+      <div class="big compute" id="o_totalgpu"></div>
+      <div class="orow"><span class="k">Inference + training</span><span class="v" id="o_split"></span></div>
+      <div class="olabel" style="margin-top:15px">By accelerator — fleet · HBM · time to build</div>
+      <table class="ctable" id="o_chiptable"></table>
+      <div class="note" id="o_buildnote"></div>
+    </div>
+  </div>
+</div>
+<div class="flow">↓</div>
+
+<!-- SECTION 3: POWER -->
+<div class="section s3">
+  <div class="shead"><div class="badge">3</div><h2>Power</h2>
+    <span class="tag">can it be powered?</span></div>
+  <div class="sbody">
+    <div class="inputs">
+      <div class="grp">Power</div>
+      <div class="ctrl"><div class="row"><label>Chip TDP (kW)</label><span class="val" id="v_tdp"></span></div>
+        <input type="range" id="tdp" min="0.5" max="3.0" step="0.1" value="2.0"></div>
+      <div class="ctrl"><div class="row"><label>GPU power fraction</label><span class="val" id="v_ghshare"></span></div>
+        <input type="range" id="ghshare" min="25" max="80" step="1" value="41"></div>
+
+      <div class="grp">Power source — build-out time</div>
+      <div class="chips" id="powersel">
+        <button data-name="Bloom Energy" data-yr="0.5"><b>Bloom</b><span>fuel cells</span><span>~6 mo</span></button>
+        <button data-name="Solar + Wind" data-yr="1.5" class="on"><b>Solar+Wind</b><span>+ storage</span><span>~1.5 yr</span></button>
+        <button data-name="Natural gas" data-yr="3"><b>Nat. gas</b><span>turbine</span><span>~3 yr</span></button>
+        <button data-name="Nuclear" data-yr="8"><b>Nuclear</b><span>SMR / large</span><span>~8 yr</span></button>
+      </div>
+    </div>
+    <div class="outputs">
+      <div class="olabel">Facility power draw</div>
+      <div class="big phys" id="o_power"></div>
+      <div class="orow"><span class="k">Annual energy</span><span class="v" id="o_energy"></span></div>
+      <div class="orow"><span class="k">≈ nuclear reactors (1 GW)</span><span class="v" id="o_reactors"></span></div>
+      <div class="orow"><span class="k">% of US avg load (480 GW)</span><span class="v" id="o_usload"></span></div>
+      <div class="orow"><span class="k">+ on US datacenters (41 GW)</span><span class="v" id="o_dc"></span></div>
+      <div class="orow"><span class="k">Power online — <span id="o_pwrname"></span></span><span class="v" id="o_pwrtime"></span></div>
+    </div>
+  </div>
+</div>
+
+<div class="verdict">
+  <h3>Binding-constraint verdict <span id="o_pill"></span></h3>
+  <div id="o_verdict" style="font-size:14px;color:var(--dim)"></div>
+</div>
+
+<div class="foot">Fermi model · assumptions are tunable and approximate · Rubin / HBM4 / grid figures as discussed.
+Benchmark: <a href="https://www.goldmansachs.com/insights/articles/ai-agents-forecast-to-boost-tech-cash-flow-as-usage-soars">Goldman Sachs — AI agents to boost tech cash flow</a> (24× → 120 qt/mo by 2030).
+Actuals 2023–25 (approx): <a href="https://a16z.com/state-of-ai/">a16z / OpenRouter State of AI</a> &amp; Google reported tokens (9.7T '24 → 980T mid-'25).</div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const ids = ['mult','inshare','params','mfu','infshare','gpuprod','hbmprod','tdp','ghshare'];
+let selTF=50000;   // selected GPU's peak inference TFLOPS (set by the GPU buttons)
+let selPwrYr=1.5, selPwrName='Solar + Wind';   // selected power source + build-out lead time (yr)
+// tf=peak inference TFLOPS · stk=HBM stacks/package · prod=TSMC packaging (M GPUs/yr) · hbm=stack supply (M/yr)
+const CHIPS=[
+  {key:'H100', tf:3958,  stk:6, prod:23, hbm:40},  // 6×HBM3 (mature),  ~26-28/wafer → 22-24 M/yr
+  {key:'B200', tf:9000,  stk:8, prod:5,  hbm:40},  // 8×HBM3E (mature), ~8-10/wafer → 4.8-6.0 M/yr
+  {key:'Rubin',tf:50000, stk:8, prod:2,  hbm:2},   // 8×HBM4 (new, scarce), ~4-6/wafer → 1.5-2.5 M/yr
+];
+const PROD0={H100:23,B200:5,Rubin:2};       // packaging defaults (for reset)
+const HBM0={H100:40,B200:40,Rubin:2};       // HBM stack-supply defaults (for reset)
+const GS_BASE=5, GS_MULT=24;            // Goldman: 5 → 120 qt/mo (24×)
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let DEMAND={base:5,mult:24};
+
+function fmtTok(t){
+  if(t>=1e15) return (t/1e15).toFixed(2)+' quadrillion / day';
+  if(t>=1e12) return (t/1e12).toFixed(1)+' trillion / day';
+  if(t>=1e9)  return (t/1e9).toFixed(1)+' billion / day';
+  return Math.round(t).toLocaleString()+' / day';
+}
+function fmtTokShort(t){
+  if(t>=1e15) return (t/1e15).toFixed(2)+' quadrillion';
+  if(t>=1e12) return (t/1e12).toFixed(0)+' trillion';
+  return (t/1e9).toFixed(1)+' billion';
+}
+function fmtGPU(n){
+  if(n>=1e6) return (n/1e6).toFixed(2)+' M';
+  if(n>=1e3) return (n/1e3).toFixed(0)+' k';
+  return Math.round(n).toLocaleString();
+}
+function fmtStk(n){ return (n/1e6).toFixed(1)+' M'; }
+
+function compute(){
+  // ---- Section 1: demand (single growth dial)
+  const base = 5;                            // fixed 2026 baseline, qt/month (Goldman's implied start)
+  const mult = parseFloat($('mult').value);
+  const inShare = parseFloat($('inshare').value)/100;
+  const qtMonth = base*mult;                 // quadrillion tokens / month, 2030
+  const total = qtMonth*1e15/30;             // tokens / day
+  const input = total*inShare, output = total*(1-inShare);
+  const cagr = (Math.pow(mult,1/4)-1)*100;
+  DEMAND={base,mult};
+
+  const isv=+$('inshare').value;
+  $('v_mult').textContent = mult.toFixed(1)+'×';
+  $('v_inshare').textContent = 'In '+isv+'% · Out '+(100-isv)+'%';
+  $('o_total').textContent = fmtTok(total);
+  $('o_cagr').textContent = '+'+cagr.toFixed(0)+'% / yr';
+  $('o_in').textContent = fmtTokShort(input);
+  $('o_out').textContent = fmtTokShort(output);
+
+  // ---- Section 2: compute
+  const active = parseFloat($('params').value)*1e9;
+  const fpt = 2*active;
+  const tflops = selTF;
+  const mfu = parseFloat($('mfu').value)/100;
+  const perGpu = tflops*1e12*86400*mfu/fpt;
+  const infGpu = total/perGpu;
+  const infShare = parseFloat($('infshare').value)/100;     // inference share of the fleet
+  const totGpu = infGpu/infShare;
+  const trainGpu = totGpu-infGpu;
+
+  // the packaging slider drives the SELECTED chip's rate (tuning is remembered per chip)
+  const selChip = CHIPS.find(c=>Math.abs(c.tf-tflops)<1) || CHIPS[2];
+  selChip.prod = parseFloat($('gpuprod').value);
+  selChip.hbm = parseFloat($('hbmprod').value);
+
+  const isr=+$('infshare').value;
+  $('v_params').textContent = (+$('params').value).toLocaleString()+' B';
+  $('v_mfu').textContent = $('mfu').value+'%';
+  $('v_infshare').textContent = 'Inference '+isr+'% · Training '+(100-isr)+'%';
+  $('v_gpuprod').textContent = $('gpuprod').value+' M';
+  $('v_hbmprod').textContent = $('hbmprod').value+' M';
+  $('o_totalgpu').textContent = fmtGPU(totGpu);
+  $('o_split').textContent = fmtGPU(infGpu)+' + '+fmtGPU(trainGpu);
+
+  // per-accelerator fleet, derived HBM, and time to build (each chip uses its own packaging rate)
+  let sel='Rubin', selBy=0, selHbmBound=false;
+  let rows='<tr><th>Chip</th><th>GPUs</th><th>HBM stacks</th><th>Build</th><th>Limited by</th></tr>';
+  CHIPS.forEach(c=>{
+    const pg=c.tf*1e12*86400*mfu/fpt;
+    const tg=(total/pg)/infShare, st=tg*c.stk;
+    const gy=tg/(c.prod*1e6), hy=st/(c.hbm*1e6), by=Math.max(gy,hy), hbmBound=hy>=gy;
+    const isSel=Math.abs(c.tf-tflops)<1; if(isSel){ sel=c.key; selBy=by; selHbmBound=hbmBound; }
+    const bt=by<1?(by*12).toFixed(1)+' mo':by.toFixed(1)+' yr';
+    const lim=hbmBound?'<span class="cbind-hbm">HBM</span>':'<span class="cbind-gpu">GPU</span>';
+    rows+='<tr class="'+(isSel?'sel':'')+'"><td>'+c.key+'</td><td>'+fmtGPU(tg)+'</td><td>'+
+      fmtStk(st)+'</td><td>'+bt+'</td><td>'+lim+'</td></tr>';
+  });
+  $('o_chiptable').innerHTML=rows;
+  $('o_chipname').textContent=sel;
+  $('o_buildnote').innerHTML='Build time = the slower of TSMC packaging vs HBM stacking '+
+    '(<span class="cbind-hbm">HBM-limited</span> / <span class="cbind-gpu">GPU-limited</span>).';
+
+  // ---- Section 3: power
+  const tdp=parseFloat($('tdp').value), ghShare=parseFloat($('ghshare').value)/100;
+  const powerGW=totGpu*tdp/ghShare/1e6;
+  const energyTWh=powerGW*8.76;
+  $('v_tdp').textContent=tdp.toFixed(1)+' kW';
+  $('v_ghshare').textContent=$('ghshare').value+'%';
+  $('o_power').textContent=powerGW.toFixed(1)+' GW';
+  $('o_energy').textContent=Math.round(energyTWh)+' TWh/yr';
+  $('o_reactors').textContent='~'+Math.round(powerGW)+' reactors';
+  $('o_usload').textContent=(100*powerGW/480).toFixed(1)+'%';
+  $('o_dc').textContent='+'+(100*powerGW/41).toFixed(0)+'%';
+  const pwrStr=selPwrYr<1?Math.round(selPwrYr*12)+' months':selPwrYr+' yr';
+  $('o_pwrname').textContent=selPwrName;
+  $('o_pwrtime').textContent='~'+pwrStr;
+
+  // ---- verdict
+  const buildStr=selBy<1?(selBy*12).toFixed(1)+' months':selBy.toFixed(1)+' years';
+  let pill,txt;
+  if(selHbmBound){
+    pill='<span class="pill warn">HBM-bound</span>';
+    txt='HBM stacking gates the '+sel+' fleet — it takes <b>'+buildStr+'</b> to build at current stack supply, long before power or FLOPs bite.';
+  } else if(powerGW>20){
+    pill='<span class="pill warn">Power-bound</span>';
+    txt='At <b>'+powerGW.toFixed(1)+' GW</b> firm 24/7 power is the wall — interconnection queues bite before the silicon runs out.';
+  } else {
+    pill='<span class="pill ok">Packaging-bound</span>';
+    txt='TSMC packaging leads: the '+sel+' fleet builds in <b>'+buildStr+'</b> drawing <b>'+powerGW.toFixed(1)+' GW</b>.';
+  }
+  $('o_pill').innerHTML=pill;
+  $('o_verdict').innerHTML=txt+' &nbsp;·&nbsp; demand <b>'+fmtTokShort(total)+'/day</b> → <b>'+
+    fmtGPU(totGpu)+'</b> '+sel+' GPUs → <b>'+powerGW.toFixed(1)+' GW</b>, powered via '+selPwrName+
+    ' (~'+pwrStr+' to build out).';
+
+  drawChart(curP);
+}
+
+/* ---------- animated projection chart ---------- */
+const cv=$('chart'), ctx=cv.getContext('2d');
+let curP=1;
+function sizeCanvas(){
+  const dpr=window.devicePixelRatio||1;
+  const w=cv.clientWidth, h=cv.clientHeight;
+  cv.width=w*dpr; cv.height=h*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {w,h};
+}
+// reported monthly consumption, quadrillion tokens/mo (approx; Google + OpenRouter/OpenAI)
+const GT=[{y:2023,v:0.002},{y:2024,v:0.02},{y:2025,v:1.2}];
+let DOTS=[], hover=null;
+function curveVal(base,mult,t){ return base*Math.pow(mult,t); } // t:0..1 over 2026..2030
+function fmtFull(v){ // v in quadrillion tokens / day
+  if(v>=1) return parseFloat(v.toFixed(2))+' quadrillion tokens/day';
+  const tn=v*1000; if(tn>=1) return parseFloat(tn.toFixed(tn>=10?0:1))+' trillion tokens/day';
+  return parseFloat((v*1e6).toFixed(0))+' billion tokens/day';
+}
+function roundRect(x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+function dot(x,y,c,year,val,tag){
+  ctx.fillStyle=c; ctx.beginPath(); ctx.arc(x,y,4,0,7); ctx.fill();
+  ctx.fillStyle='#0b0e14'; ctx.beginPath(); ctx.arc(x,y,1.6,0,7); ctx.fill();
+  DOTS.push({x,y,color:c,year,val,tag});
+}
+function drawChart(p){
+  const {w,h}=sizeCanvas();
+  ctx.clearRect(0,0,w,h);
+  const padL=46,padR=66,padT=20,padB=30;
+  const gx0=padL,gx1=w-padR,gy0=h-padB,gy1=padT;
+  const yr0=2023,yr1=2030;
+  const DPM=30;                                        // qt/month → qt/day
+  const projEnd=DEMAND.base*DEMAND.mult/DPM, gsEnd=GS_BASE*GS_MULT/DPM;
+  const vMax=Math.max(gsEnd,projEnd)*1.12;             // linear axis, qt/day
+  const xOf=yr=>gx0+(gx1-gx0)*((yr-yr0)/(yr1-yr0));
+  const yOf=v=>gy0+(gy1-gy0)*(v/vMax);
+  const tx=t=>xOf(2026+4*t);                           // forecast t:0..1 → 2026..2030
+  DOTS=[];
+
+  ctx.font='11px -apple-system,Segoe UI,Roboto,sans-serif'; ctx.textBaseline='middle';
+  // linear gridlines + y labels
+  for(let i=0;i<=4;i++){ const v=vMax*i/4, y=yOf(v);
+    ctx.strokeStyle='rgba(255,255,255,.06)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(gx0,y); ctx.lineTo(gx1,y); ctx.stroke();
+    ctx.fillStyle='#6b7689'; ctx.textAlign='right'; ctx.fillText(parseFloat(v.toFixed(1)), gx0-8, y); }
+  // x labels (years)
+  ctx.textAlign='center'; ctx.textBaseline='top'; ctx.fillStyle='#6b7689';
+  for(let yr=yr0;yr<=yr1;yr++) ctx.fillText(yr, xOf(yr), gy0+8);
+  ctx.textAlign='left'; ctx.fillText('quadrillion tokens / day', gx0-40, gy1-15);
+
+  // history | forecast divider at 2026
+  ctx.strokeStyle='rgba(255,255,255,.12)'; ctx.setLineDash([3,4]); ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(xOf(2026),gy1); ctx.lineTo(xOf(2026),gy0); ctx.stroke(); ctx.setLineDash([]);
+
+  // Goldman reference (2026→2030), dashed gold
+  ctx.setLineDash([5,5]); ctx.strokeStyle='#f5c451'; ctx.lineWidth=2; ctx.beginPath();
+  for(let i=0;i<=40;i++){ const t=i/40,v=curveVal(GS_BASE,GS_MULT,t)/DPM;
+    const x=tx(t),y=yOf(v); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+  ctx.stroke(); ctx.setLineDash([]);
+
+  // Ground truth (2023→2025), emerald, solid; connect into the 2026 base
+  const gt=[...GT.map(q=>({y:q.y,v:q.v/DPM})),{y:2026,v:GS_BASE/DPM}];
+  ctx.strokeStyle='#34d399'; ctx.lineWidth=2.4; ctx.lineJoin='round'; ctx.beginPath();
+  gt.forEach((pt,i)=>{ const x=xOf(pt.y),y=yOf(pt.v); i?ctx.lineTo(x,y):ctx.moveTo(x,y); });
+  ctx.stroke();
+  GT.forEach(pt=>dot(xOf(pt.y),yOf(pt.v/DPM),'#34d399',pt.y,pt.v/DPM,'Actual'));
+
+  // Your projection (2026→2030), animated to progress p
+  const tEnd=p;
+  const grad=ctx.createLinearGradient(0,gy1,0,gy0);
+  grad.addColorStop(0,'rgba(167,139,250,.26)'); grad.addColorStop(1,'rgba(167,139,250,0)');
+  ctx.beginPath(); let lx=tx(0),ly=yOf(DEMAND.base/DPM); ctx.moveTo(tx(0),gy0);
+  for(let i=0;i<=60;i++){ const t=tEnd*i/60,v=curveVal(DEMAND.base,DEMAND.mult,t)/DPM;
+    lx=tx(t); ly=yOf(v); ctx.lineTo(lx,ly); }
+  ctx.lineTo(lx,gy0); ctx.closePath(); ctx.fillStyle=grad; ctx.fill();
+  ctx.strokeStyle='#a78bfa'; ctx.lineWidth=2.6; ctx.lineJoin='round'; ctx.beginPath();
+  for(let i=0;i<=60;i++){ const t=tEnd*i/60,v=curveVal(DEMAND.base,DEMAND.mult,t)/DPM;
+    const x=tx(t),y=yOf(v); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+  ctx.stroke();
+  // Goldman endpoint dot (hoverable)
+  dot(tx(1),yOf(gsEnd),'#f5c451',2030,gsEnd,'Goldman');
+  // projection year dots 2026→2030 (revealed as the animation passes each)
+  for(let yr=2026;yr<=2030;yr++){ const t=(yr-2026)/4, dv=curveVal(DEMAND.base,DEMAND.mult,t)/DPM;
+    if(t<=tEnd+1e-6) dot(xOf(yr),yOf(dv),'#a78bfa',yr,dv,'Projected'); }
+  // moving leading dot while animating
+  if(tEnd<0.999){ ctx.fillStyle='#a78bfa'; ctx.beginPath(); ctx.arc(lx,ly,4,0,7); ctx.fill(); }
+
+  // hover tooltip
+  if(hover){
+    const l1=hover.year+'  ·  '+hover.tag, l2=fmtFull(hover.val);
+    ctx.font='700 12px -apple-system,Segoe UI,Roboto,sans-serif';
+    const tw=Math.max(ctx.measureText(l1).width, ctx.measureText(l2).width)+18, th=40;
+    let bx=hover.x+12, by=hover.y-th-8;
+    if(bx+tw>w-4) bx=hover.x-tw-12; if(by<gy1) by=hover.y+12;
+    ctx.save();
+    ctx.shadowColor='rgba(0,0,0,.55)'; ctx.shadowBlur=12; ctx.shadowOffsetY=3;
+    ctx.fillStyle='#232c3d'; ctx.strokeStyle=hover.color; ctx.lineWidth=1.5;
+    roundRect(bx,by,tw,th,8); ctx.fill(); ctx.restore();
+    ctx.strokeStyle=hover.color; ctx.lineWidth=1.5; roundRect(bx,by,tw,th,8); ctx.stroke();
+    ctx.textAlign='left'; ctx.textBaseline='top';
+    ctx.fillStyle=hover.color; ctx.fillText(l1,bx+9,by+7);
+    ctx.font='12px -apple-system,Segoe UI,Roboto,sans-serif'; ctx.fillStyle='#e6ebf2';
+    ctx.fillText(l2,bx+9,by+22);
+    ctx.strokeStyle=hover.color; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(hover.x,hover.y,7,0,7); ctx.stroke();
+  }
+}
+cv.addEventListener('mousemove',e=>{
+  const r=cv.getBoundingClientRect(), mx=e.clientX-r.left, my=e.clientY-r.top;
+  let best=null,bd=13;
+  DOTS.forEach(d=>{ const dist=Math.hypot(d.x-mx,d.y-my); if(dist<bd){bd=dist;best=d;} });
+  if(best!==hover){ hover=best; cv.style.cursor=best?'pointer':'default'; drawChart(curP); }
+});
+cv.addEventListener('mouseleave',()=>{ if(hover){ hover=null; drawChart(curP); } });
+function animateDemand(){
+  if(reduceMotion){ curP=1; drawChart(1); return; }
+  const dur=1100, t0=performance.now();
+  function frame(now){
+    let k=Math.min((now-t0)/dur,1);
+    k=1-Math.pow(1-k,3);            // easeOutCubic
+    curP=k; drawChart(k);
+    if(k<1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+/* chip buttons */
+document.querySelectorAll('#chipsel button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('#chipsel button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); selTF=+b.dataset.tf; $('tdp').value=b.dataset.tdp;
+    const cc=CHIPS.find(c=>c.tf===selTF);
+    if(cc){ $('gpuprod').value=cc.prod; $('hbmprod').value=cc.hbm; }
+    compute();
+  };
+});
+
+/* power-source buttons */
+document.querySelectorAll('#powersel button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('#powersel button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); selPwrYr=+b.dataset.yr; selPwrName=b.dataset.name; compute();
+  };
+});
+
+function preset(p){
+  const set=(id,v)=>{$(id).value=v;};
+  set('inshare',95); set('infshare',65);
+  set('params',500); selTF=50000; set('tdp',2.0);
+  CHIPS.forEach(c=>{c.prod=PROD0[c.key];c.hbm=HBM0[c.key];}); set('gpuprod',PROD0.Rubin); set('hbmprod',HBM0.Rubin);
+  set('tdp',2.0); set('ghshare',41);
+  document.querySelectorAll('#chipsel button').forEach(x=>x.classList.toggle('on',x.dataset.tf==='50000'));
+  selPwrYr=1.5; selPwrName='Solar + Wind';
+  document.querySelectorAll('#powersel button').forEach(x=>x.classList.toggle('on',x.dataset.yr==='1.5'));
+  const cfg={ base:{mult:1,mfu:50}, low:{mult:10,mfu:50}, gs:{mult:24,mfu:50}, gs30:{mult:24,mfu:30} }[p];
+  set('mult',cfg.mult); set('mfu',cfg.mfu);
+  compute(); animateDemand();
+}
+
+ids.forEach(id=>{
+  $(id).addEventListener('input',compute);
+  if(id==='mult') $(id).addEventListener('change',animateDemand);
+});
+window.addEventListener('resize',()=>drawChart(curP));
+compute(); animateDemand();
+</script>
+</body>
+</html>
