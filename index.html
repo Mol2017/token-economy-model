@@ -203,18 +203,18 @@
       <div class="grp">GPU</div>
       <div class="chips" id="chipsel">
         <button data-tf="3958" data-tdp="0.7" data-gpuprod="23"><b>H100</b><span>3,958 TFLOPS · FP8</span><span>80 GB · 6×HBM3</span><em class="st mat">mature</em></button>
-        <button data-tf="9000" data-tdp="1.0" data-gpuprod="5"><b>B200</b><span>9,000 TFLOPS · FP4</span><span>192 GB · 8×HBM3E</span><em class="st mat">mature</em></button>
-        <button data-tf="50000" data-tdp="2.0" data-gpuprod="2" class="on"><b>Rubin</b><span>50,000 TFLOPS · FP4</span><span>288 GB · 8×HBM4</span><em class="st ramp">ramp-up</em></button>
+        <button data-tf="9000" data-tdp="1.0" data-gpuprod="5" class="on"><b>B200</b><span>9,000 TFLOPS · FP4</span><span>192 GB · 8×HBM3E</span><em class="st mat">mature</em></button>
+        <button data-tf="50000" data-tdp="2.0" data-gpuprod="2"><b>Rubin</b><span>50,000 TFLOPS · FP4</span><span>288 GB · 8×HBM4</span><em class="st ramp">ramp-up</em></button>
       </div>
 
       <div class="grp">Production capacity (per year)</div>
       <div class="ctrl"><div class="row"><label>TSMC packaging — selected GPU (M / yr)</label><span class="val" id="v_gpuprod"></span></div>
-        <input type="range" id="gpuprod" min="1" max="30" step="1" value="2"></div>
+        <input type="range" id="gpuprod" min="1" max="30" step="1" value="5"></div>
       <div class="ctrl"><div class="row"><label>HBM stacks / yr — selected GPU</label><span class="val" id="v_hbmprod"></span></div>
-        <input type="range" id="hbmprod" min="1" max="120" step="1" value="2"></div>
+        <input type="range" id="hbmprod" min="1" max="120" step="1" value="40"></div>
     </div>
     <div class="outputs">
-      <div class="olabel">GPUs needed — <span id="o_chipname">Rubin</span></div>
+      <div class="olabel">GPUs needed — <span id="o_chipname">B200</span></div>
       <div class="big compute" id="o_totalgpu"></div>
       <div class="orow"><span class="k">Inference + training</span><span class="v" id="o_split"></span></div>
       <div class="olabel" style="margin-top:15px">By accelerator — fleet · HBM · time to build</div>
@@ -233,7 +233,7 @@
     <div class="inputs">
       <div class="grp">Power</div>
       <div class="ctrl"><div class="row"><label>Chip TDP (kW)</label><span class="val" id="v_tdp"></span></div>
-        <input type="range" id="tdp" min="0.5" max="3.0" step="0.1" value="2.0"></div>
+        <input type="range" id="tdp" min="0.5" max="3.0" step="0.1" value="1.0"></div>
       <div class="ctrl"><div class="row"><label>GPU power fraction</label><span class="val" id="v_ghshare"></span></div>
         <input type="range" id="ghshare" min="25" max="80" step="1" value="41"></div>
 
@@ -270,7 +270,7 @@ Actuals 2023–25 (approx): <a href="https://a16z.com/state-of-ai/">a16z / OpenR
 <script>
 const $ = id => document.getElementById(id);
 const ids = ['mult','inshare','params','mfu','infshare','gpuprod','hbmprod','tdp','ghshare'];
-let selTF=50000;   // selected GPU's peak inference TFLOPS (set by the GPU buttons)
+let selTF=9000;    // selected GPU's peak inference TFLOPS (set by the GPU buttons) — default B200
 let selPwrYr=1.5, selPwrName='Solar + Wind';   // selected power source + build-out lead time (yr)
 // tf=peak inference TFLOPS · stk=HBM stacks/package · prod=TSMC packaging (M GPUs/yr) · hbm=stack supply (M/yr)
 const CHIPS=[
@@ -548,10 +548,10 @@ document.querySelectorAll('#powersel button').forEach(b=>{
 function preset(p){
   const set=(id,v)=>{$(id).value=v;};
   set('inshare',95); set('infshare',65);
-  set('params',500); selTF=50000; set('tdp',2.0);
-  CHIPS.forEach(c=>{c.prod=PROD0[c.key];c.hbm=HBM0[c.key];}); set('gpuprod',PROD0.Rubin); set('hbmprod',HBM0.Rubin);
-  set('tdp',2.0); set('ghshare',41);
-  document.querySelectorAll('#chipsel button').forEach(x=>x.classList.toggle('on',x.dataset.tf==='50000'));
+  set('params',500); selTF=9000;
+  CHIPS.forEach(c=>{c.prod=PROD0[c.key];c.hbm=HBM0[c.key];}); set('gpuprod',PROD0.B200); set('hbmprod',HBM0.B200);
+  set('tdp',1.0); set('ghshare',41);
+  document.querySelectorAll('#chipsel button').forEach(x=>x.classList.toggle('on',x.dataset.tf==='9000'));
   selPwrYr=1.5; selPwrName='Solar + Wind';
   document.querySelectorAll('#powersel button').forEach(x=>x.classList.toggle('on',x.dataset.yr==='1.5'));
   const cfg={ base:{mult:1,mfu:50}, low:{mult:10,mfu:50}, gs:{mult:24,mfu:50}, gs30:{mult:24,mfu:30} }[p];
