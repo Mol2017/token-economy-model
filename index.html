@@ -127,10 +127,9 @@
   and watch it flow through the physics — tokens → GPUs → HBM, power &amp; the manufacturing limits that gate the buildout.</div>
   <div class="presets">
     <span class="lbl">Scenarios:</span>
-    <button onclick="preset('base')">2026 baseline</button>
     <button onclick="preset('low')">2030 · 10× (lower)</button>
-    <button onclick="preset('gs')">2030 · 24× Goldman</button>
-    <button onclick="preset('gs30')">Goldman · 30% MFU</button>
+    <button onclick="preset('gs')">2030 · 24× GS prediction</button>
+    <button onclick="preset('up')">2030 · 40×</button>
   </div>
 </header>
 
@@ -554,7 +553,7 @@ function preset(p){
   document.querySelectorAll('#chipsel button').forEach(x=>x.classList.toggle('on',x.dataset.tf==='9000'));
   selPwrYr=1.5; selPwrName='Solar + Wind';
   document.querySelectorAll('#powersel button').forEach(x=>x.classList.toggle('on',x.dataset.yr==='1.5'));
-  const cfg={ base:{mult:1,mfu:50}, low:{mult:10,mfu:50}, gs:{mult:24,mfu:50}, gs30:{mult:24,mfu:30} }[p];
+  const cfg={ low:{mult:10,mfu:50}, gs:{mult:24,mfu:50}, up:{mult:40,mfu:50} }[p];
   set('mult',cfg.mult); set('mfu',cfg.mfu);
   compute(); animateDemand();
 }
