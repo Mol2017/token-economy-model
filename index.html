@@ -31,7 +31,7 @@
   .shead{padding:16px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}
   .badge{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;
     font-weight:800;font-size:15px;color:#0b0e14}
-  .s1 .badge{background:var(--demand)} .s2 .badge{background:var(--compute)} .s3 .badge{background:var(--phys)}
+  .s1 .badge{background:var(--demand)} .s2 .badge{background:var(--compute)} .s3 .badge{background:var(--phys)} .s4 .badge{background:var(--ok)}
   .s0 .badge{background:var(--accent)}
   .abody{padding:6px 22px 18px}
   .assume{display:flex;gap:13px;padding:13px 0;border-bottom:1px solid var(--line)}
@@ -53,7 +53,8 @@
   .shead .tag{color:var(--dim);font-size:13px;margin-left:auto}
   .sbody{display:grid;grid-template-columns:1.15fr .85fr;gap:0}
   .s1 .sbody{grid-template-columns:.82fr 1.18fr}
-  @media(max-width:820px){.sbody,.s1 .sbody{grid-template-columns:1fr}}
+  .s2 .sbody{grid-template-columns:.72fr 1.28fr}
+  @media(max-width:820px){.sbody,.s1 .sbody,.s2 .sbody{grid-template-columns:1fr}}
   .inputs{padding:18px 22px;border-right:1px solid var(--line)}
   @media(max-width:820px){.inputs{border-right:none;border-bottom:1px solid var(--line)}}
   .outputs{padding:18px 22px;background:var(--card2)}
@@ -64,6 +65,13 @@
   .ctrl.hero label{font-size:14px;color:var(--txt);font-weight:600}
   .ctrl.hero .val{font-size:20px;color:var(--demand)}
   .ctrl.hero input[type=range]{height:7px}
+  .ctrl .val input[type=number]{width:74px;background:var(--card2);border:1px solid var(--line);
+    color:var(--txt);font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;
+    text-align:right;border-radius:6px;padding:1px 5px;-moz-appearance:textfield}
+  .ctrl.hero .val input[type=number]{font-size:20px;color:var(--demand)}
+  .ctrl .val input[type=number]:focus{outline:none;border-color:var(--accent)}
+  .ctrl .val input[type=number]::-webkit-outer-spin-button,
+  .ctrl .val input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
   input[type=range]{width:100%;-webkit-appearance:none;height:5px;border-radius:5px;
     background:var(--line);outline:none}
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;
@@ -82,6 +90,23 @@
   .chips button span{font-size:10px}
   .chips button.on{border-color:var(--compute);color:var(--compute);background:#10202e}
   .chips button.on b{color:var(--compute)}
+  #chipsel .tpw{font-weight:700;color:var(--accent2)}
+  #chipsel button.on .tpw{color:var(--compute)}
+  #chipsel{flex-wrap:wrap}
+  #chipsel button{flex:1 1 28%;min-width:138px}
+  /* compact left (inputs) column in section 2 */
+  .s2 .inputs{padding:14px 16px}
+  .s2 .inputs .grp{margin:11px 0 2px;padding-top:8px}
+  .s2 .inputs .ctrl{margin:8px 0}
+  .s2 .inputs label{font-size:12px}
+  .s2 .inputs .note{font-size:11px;padding:8px 10px}
+  .s2 #chipsel{gap:5px}
+  .s2 #chipsel button{min-width:108px;padding:6px 5px;gap:1px}
+  .s2 #chipsel button b{font-size:11.5px}
+  .s2 #chipsel button span{font-size:8.5px}
+  .s2 #chipsel .st{font-size:8px;padding:1px 5px}
+  .rampmark{font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:.3px;
+    border:1px solid rgba(245,196,81,.4);border-radius:10px;padding:0 5px;margin-left:6px;vertical-align:middle}
   .chips .st{font-size:9px;font-style:normal;text-transform:uppercase;letter-spacing:.4px;
     padding:1px 6px;border-radius:20px;margin-top:3px;align-self:center}
   .chips .st.mat{background:rgba(74,222,128,.14);color:var(--ok)}
@@ -92,6 +117,18 @@
   .big{font-size:30px;font-weight:800;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
   .big.demand{color:var(--demand)} .big.compute{color:var(--compute)} .big.phys{color:var(--phys)}
   .olabel{font-size:12px;color:var(--dim);text-transform:uppercase;letter-spacing:.6px;margin-top:14px}
+  .dtag{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;
+    padding:1px 6px;border-radius:20px;margin-right:6px;vertical-align:middle}
+  .dtag.dem{background:rgba(125,211,252,.16);color:var(--compute)}
+  .dtag.sup{background:rgba(245,196,81,.16);color:var(--gold)}
+  .cmp{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:stretch}
+  .cmp-cell{padding:11px 12px;border-radius:10px;border:1px solid var(--line)}
+  .cmp-cell.dem{background:rgba(125,211,252,.06)}
+  .cmp-cell.sup{background:rgba(245,196,81,.05)}
+  .cmp-cell .olabel{margin-top:0}
+  .cmp-cell .big{font-size:25px;margin-top:2px}
+  .cmp-cell .ctrl{margin:8px 0 4px}
+  @media(max-width:520px){.cmp{grid-template-columns:1fr}}
   .orow{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line);
     font-size:14px;font-variant-numeric:tabular-nums}
   .orow:last-child{border-bottom:none}
@@ -130,6 +167,8 @@
     <button onclick="preset('low')">2030 · 10× (lower)</button>
     <button onclick="preset('gs')">2030 · 24× GS prediction</button>
     <button onclick="preset('up')">2030 · 40×</button>
+    <button onclick="preset('bull')">2030 · 100×</button>
+    <button onclick="preset('extreme')">2030 · 1000×</button>
   </div>
 </header>
 
@@ -158,8 +197,9 @@
     <span class="tag">how big does the pie get by 2030?</span></div>
   <div class="sbody">
     <div class="inputs">
-      <div class="ctrl hero"><div class="row"><label>2030 growth multiplier</label><span class="val" id="v_mult"></span></div>
-        <input type="range" id="mult" min="1" max="50" step="0.5" value="24"></div>
+      <div class="ctrl hero"><div class="row"><label>2030 growth multiplier</label>
+        <span class="val"><input type="number" id="mult_num" min="1" max="1000" step="0.5" value="100"> ×</span></div>
+        <input type="range" id="mult" min="0" max="1000" step="1" value="667"></div>
       <div class="ctrl"><div class="row"><label>Input vs Output tokens</label><span class="val" id="v_inshare"></span></div>
         <input type="range" id="inshare" min="50" max="99" step="1" value="95"></div>
 
@@ -173,7 +213,7 @@
       <div class="legend">
         <span><i class="swatch actual"></i> Reported 2023–25 (actual)</span>
         <span><i class="swatch you"></i> Your projection</span>
-        <span><i class="swatch gold"></i> Goldman projection (24×)</span>
+        <span><i class="swatch gold"></i> GS prediction 24×</span>
       </div>
       <div class="chartwrap"><canvas id="chart"></canvas></div>
     </div>
@@ -188,10 +228,11 @@
   <div class="sbody">
     <div class="inputs">
       <div class="grp">Model</div>
-      <div class="ctrl"><div class="row"><label>Active params (B) — MoE</label><span class="val" id="v_params"></span></div>
+      <div class="ctrl"><div class="row"><label>Active params (B) — MoE</label>
+        <span class="val"><input type="number" id="params_num" min="0.1" max="5000" step="10" value="500"> B</span></div>
         <input type="range" id="params" min="20" max="2000" step="10" value="500"></div>
-      <div class="note" style="margin-top:6px">2030 frontier model. The <b>500B</b> default is the active-parameter
-      size assumed for <b>Claude Fable 5</b> — a sparse MoE, so only the active params run per token.</div>
+      <div class="note" style="margin-top:6px">The assumed active params for the <b>2030</b> frontier model.<br>
+      <b>Claude Fable 5</b> ≈ hundreds of millions active.</div>
 
       <div class="grp">Utilization</div>
       <div class="ctrl"><div class="row"><label>MFU — utilization</label><span class="val" id="v_mfu"></span></div>
@@ -201,22 +242,48 @@
 
       <div class="grp">GPU</div>
       <div class="chips" id="chipsel">
-        <button data-tf="3958" data-tdp="0.7" data-gpuprod="23"><b>H100</b><span>3,958 TFLOPS · FP8</span><span>80 GB · 6×HBM3</span><em class="st mat">mature</em></button>
-        <button data-tf="9000" data-tdp="1.0" data-gpuprod="5" class="on"><b>B200</b><span>9,000 TFLOPS · FP4</span><span>192 GB · 8×HBM3E</span><em class="st mat">mature</em></button>
-        <button data-tf="50000" data-tdp="2.0" data-gpuprod="2"><b>Rubin</b><span>50,000 TFLOPS · FP4</span><span>288 GB · 8×HBM4</span><em class="st ramp">ramp-up</em></button>
+        <button data-tf="3900" data-tdp="0.7" data-gpuprod="29"><b>Hopper</b><span>H100 / H200 · 2022–24</span><span>3.9 PFLOPS · FP8</span><span>80 / 141 GB · 3.35 TB/s · HBM3</span><span class="tpw"></span><em class="st mat">mature</em></button>
+        <button data-tf="14000" data-tdp="1.0" data-gpuprod="11"><b>Blackwell</b><span>B100 / B200 · 2024–25</span><span>14 PFLOPS · FP4</span><span>192 GB · 8 TB/s · HBM3e</span><span class="tpw"></span><em class="st mat">mature</em></button>
+        <button data-tf="30000" data-tdp="1.4" data-gpuprod="10"><b>Blackwell Ultra</b><span>B300 / GB300 · 2026</span><span>30 PFLOPS · FP4</span><span>288 GB · 8 TB/s · HBM3e</span><span class="tpw"></span><em class="st mat">shipping</em></button>
+        <button data-tf="50000" data-tdp="1.8" data-gpuprod="9"><b>Rubin</b><span>Rubin GPU · late 2026</span><span>50 PFLOPS · FP4</span><span>288 GB · 22 TB/s · HBM4</span><span class="tpw"></span><em class="st ramp">ramping</em></button>
+        <button data-tf="100000" data-tdp="2.3" data-gpuprod="3" class="on"><b>Rubin Ultra</b><span>Rubin Ultra GPU · 2027</span><span>~100 PFLOPS · FP4</span><span>1,024 GB · 32 TB/s · HBM4e</span><span class="tpw"></span><em class="st ramp">ramping</em></button>
+        <button data-tf="200000" data-tdp="4.5" data-gpuprod="3"><b>Feynman</b><span>Feynman GPU · 2028–30</span><span>~200 PFLOPS · FP4</span><span>~2 TB · ~70 TB/s · optical</span><span class="tpw"></span><em class="st ramp">ramping</em></button>
       </div>
 
-      <div class="grp">Production capacity (per year)</div>
-      <div class="ctrl"><div class="row"><label>TSMC packaging — selected GPU (M / yr)</label><span class="val" id="v_gpuprod"></span></div>
-        <input type="range" id="gpuprod" min="1" max="30" step="1" value="5"></div>
-      <div class="ctrl"><div class="row"><label>HBM stacks / yr — selected GPU</label><span class="val" id="v_hbmprod"></span></div>
-        <input type="range" id="hbmprod" min="1" max="120" step="1" value="40"></div>
     </div>
     <div class="outputs">
-      <div class="olabel">GPUs needed — <span id="o_chipname">B200</span></div>
-      <div class="big compute" id="o_totalgpu"></div>
-      <div class="orow"><span class="k">Inference + training</span><span class="v" id="o_split"></span></div>
-      <div class="olabel" style="margin-top:15px">By accelerator — fleet · HBM · time to build</div>
+      <div class="cmp">
+        <!-- LEFT: demand (GPU + HBM) -->
+        <div class="cmp-cell dem">
+          <div class="olabel"><span class="dtag dem">Demand</span> GPUs needed — <span id="o_chipname">Blackwell</span></div>
+          <div class="big compute" id="o_totalgpu"></div>
+          <div class="orow"><span class="k">Inf + train</span><span class="v" id="o_split"></span></div>
+          <div class="olabel" style="margin-top:12px"><span class="dtag dem">Demand</span> HBM needed (GB)</div>
+          <div class="big compute" id="o_hbmneed"></div>
+          <div class="orow"><span class="k">Per GPU · total</span><span class="v" id="o_hbmper"></span></div>
+        </div>
+        <!-- RIGHT: supply (TSMC ↔ GPU, HBM ↔ HBM) -->
+        <div class="cmp-cell sup">
+          <div class="olabel"><span class="dtag sup">Supply</span> TSMC packaging</div>
+          <div class="ctrl"><div class="row"><label>CoWoS wafers / yr (2027)</label>
+            <span class="val"><input type="number" id="cowosprod" min="0.1" max="20" step="0.1" value="2.1"> M</span></div></div>
+          <div class="ctrl"><div class="row"><label>To NVIDIA</label>
+            <span class="val"><input type="number" id="nvcowosse" min="1" max="100" step="1" value="60"> %</span></div></div>
+          <div class="orow"><span class="k">→ Selected GPU / yr</span><span class="v" id="o_tsmc_gpuyr"></span></div>
+          <div class="orow"><span class="k">Time to build</span><span class="v" id="o_gpubuild"></span></div>
+          <div class="olabel" style="margin-top:12px"><span class="dtag sup">Supply</span> Global HBM supply</div>
+          <div class="ctrl"><div class="row"><label>HBM wafers / yr (2027)</label>
+            <span class="val"><input type="number" id="hbmprod" min="0.1" max="50" step="0.25" value="9.1"> M</span></div></div>
+          <div class="ctrl"><div class="row"><label>To NVIDIA</label>
+            <span class="val"><input type="number" id="nvshare" min="1" max="100" step="1" value="60"> %</span></div></div>
+          <div class="ctrl"><div class="row"><label>Success rate</label>
+            <span class="val"><input type="number" id="hbmyield" min="1" max="100" step="1" value="50"> %</span></div></div>
+          <div class="orow"><span class="k">→ Selected GPU / yr</span><span class="v" id="o_hbmgpuyr"></span></div>
+          <div class="orow"><span class="k">Time to build</span><span class="v" id="o_hbmbuild"></span></div>
+        </div>
+      </div>
+
+      <div class="olabel" style="margin-top:15px">All accelerators — fleet · HBM · time to build</div>
       <table class="ctable" id="o_chiptable"></table>
       <div class="note" id="o_buildnote"></div>
     </div>
@@ -232,7 +299,7 @@
     <div class="inputs">
       <div class="grp">Power</div>
       <div class="ctrl"><div class="row"><label>Chip TDP (kW)</label><span class="val" id="v_tdp"></span></div>
-        <input type="range" id="tdp" min="0.5" max="3.0" step="0.1" value="1.0"></div>
+        <input type="range" id="tdp" min="0.5" max="6.0" step="0.1" value="2.3"></div>
       <div class="ctrl"><div class="row"><label>GPU power fraction</label><span class="val" id="v_ghshare"></span></div>
         <input type="range" id="ghshare" min="25" max="80" step="1" value="41"></div>
 
@@ -247,11 +314,54 @@
     <div class="outputs">
       <div class="olabel">Facility power draw</div>
       <div class="big phys" id="o_power"></div>
-      <div class="orow"><span class="k">Annual energy</span><span class="v" id="o_energy"></span></div>
-      <div class="orow"><span class="k">≈ nuclear reactors (1 GW)</span><span class="v" id="o_reactors"></span></div>
-      <div class="orow"><span class="k">% of US avg load (480 GW)</span><span class="v" id="o_usload"></span></div>
-      <div class="orow"><span class="k">+ on US datacenters (41 GW)</span><span class="v" id="o_dc"></span></div>
       <div class="orow"><span class="k">Power online — <span id="o_pwrname"></span></span><span class="v" id="o_pwrtime"></span></div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 4: MARKET CAP -->
+<div class="section s4">
+  <div class="shead"><div class="badge">4</div><h2>Market Cap</h2>
+    <span class="tag">what is it worth?</span></div>
+  <div class="sbody">
+    <div class="inputs">
+      <div class="grp">GPU units sold / yr (2030)</div>
+      <div class="ctrl"><div class="row"><label>Feynman (M / yr)</label>
+        <span class="val"><input type="number" id="mc_fy_units" min="0" max="20" step="0.5" value="3"></span></div></div>
+      <div class="ctrl"><div class="row"><label>Rubin Ultra (M / yr)</label>
+        <span class="val"><input type="number" id="mc_ru_units" min="0" max="20" step="0.5" value="4"></span></div></div>
+
+      <div class="grp">NVIDIA assumptions</div>
+      <div class="ctrl"><div class="row"><label>Feynman ASP ($)</label>
+        <span class="val"><input type="number" id="mc_fy_asp" min="10" max="500" step="5" value="75"> k</span></div></div>
+      <div class="ctrl"><div class="row"><label>Rubin Ultra ASP ($)</label>
+        <span class="val"><input type="number" id="mc_ru_asp" min="10" max="500" step="5" value="65"> k</span></div></div>
+      <div class="ctrl"><div class="row"><label>GPU → total rev. multiplier</label>
+        <span class="val"><input type="number" id="mc_nv_rmult" min="1" max="5" step="0.05" value="1.3"></span></div></div>
+      <div class="ctrl"><div class="row"><label>Net profit margin</label>
+        <span class="val"><input type="number" id="mc_nv_margin" min="1" max="100" step="1" value="60"> %</span></div></div>
+      <div class="ctrl"><div class="row"><label>NVIDIA P / E</label>
+        <span class="val"><input type="number" id="mc_nv_pe" min="1" max="100" step="1" value="20"></span></div></div>
+
+      <div class="grp">HBM companies assumptions</div>
+      <div class="ctrl"><div class="row"><label>HBM price ($ / GB)</label>
+        <span class="val"><input type="number" id="mc_hbm_pgb" min="1" max="50" step="1" value="20"></span></div></div>
+      <div class="ctrl"><div class="row"><label>NVIDIA HBM share</label>
+        <span class="val"><input type="number" id="mc_hbm_nvsh" min="10" max="100" step="5" value="60"> %</span></div></div>
+      <div class="ctrl"><div class="row"><label>HBM co. P / S</label>
+        <span class="val"><input type="number" id="mc_hbm_ps" min="1" max="30" step="0.5" value="10"></span></div></div>
+    </div>
+    <div class="outputs">
+      <div class="olabel"><span class="dtag" style="background:rgba(74,222,128,.16);color:var(--ok)">NVIDIA</span> est. 2030 market cap</div>
+      <div class="orow"><span class="k">GPU revenue</span><span class="v" id="mc_o_nv_gpurev"></span></div>
+      <div class="orow"><span class="k">Est. total revenue</span><span class="v" id="mc_o_nv_totrev"></span></div>
+      <div class="orow"><span class="k">Net income (<span id="mc_o_margin_pct">60</span>% margin)</span><span class="v" id="mc_o_nv_income"></span></div>
+      <div class="big" id="mc_o_nv_mktcap" style="color:var(--ok)"></div>
+
+      <div class="olabel" style="margin-top:20px"><span class="dtag sup">HBM companies</span> est. 2030 combined market cap</div>
+      <div class="orow"><span class="k">NVIDIA HBM spend</span><span class="v" id="mc_o_hbm_nvrev"></span></div>
+      <div class="orow"><span class="k">Global HBM market</span><span class="v" id="mc_o_hbm_totrev"></span></div>
+      <div class="big" id="mc_o_hbm_mktcap" style="color:var(--gold)"></div>
     </div>
   </div>
 </div>
@@ -268,18 +378,33 @@ Actuals 2023–25 (approx): <a href="https://a16z.com/state-of-ai/">a16z / OpenR
 
 <script>
 const $ = id => document.getElementById(id);
-const ids = ['mult','inshare','params','mfu','infshare','gpuprod','hbmprod','tdp','ghshare'];
-let selTF=9000;    // selected GPU's peak inference TFLOPS (set by the GPU buttons) — default B200
+const ids = ['inshare','mfu','infshare','cowosprod','nvcowosse','hbmprod','nvshare','hbmyield','tdp','ghshare',
+  'mc_ru_units','mc_fy_units','mc_ru_asp','mc_fy_asp','mc_nv_rmult','mc_nv_margin','mc_nv_pe','mc_hbm_pgb','mc_hbm_nvsh','mc_hbm_ps'];
+// multiplier: log-scaled slider (1..1000) + typeable number box
+const MULT_MIN=1, MULT_MAX=1000, MULT_LOG=Math.log10(MULT_MAX)-Math.log10(MULT_MIN);
+const sliderPosToMult = pos => Math.pow(10, Math.log10(MULT_MIN)+(pos/1000)*MULT_LOG);
+const multToSliderPos = m => Math.round(1000*(Math.log10(m)-Math.log10(MULT_MIN))/MULT_LOG);
+const clampMult = m => Math.min(MULT_MAX, Math.max(MULT_MIN, m));
+const fmtMult = m => m>=100 ? Math.round(m) : parseFloat(m.toFixed(1));
+function setMult(m){ m=clampMult(m); $('mult_num').value=fmtMult(m); $('mult').value=multToSliderPos(m); }
+// active params: typeable number box (source of truth) + linear slider clamped to its own range
+const PARAM_SMIN=20, PARAM_SMAX=2000;   // slider bounds (B); the number box may go beyond
+function setParams(p){ $('params_num').value=p; $('params').value=Math.min(PARAM_SMAX,Math.max(PARAM_SMIN,p)); }
+let selTF=100000;  // selected GPU's peak inference TFLOPS (set by the GPU buttons) — default Rubin Ultra
 let selPwrYr=1.5, selPwrName='Solar + Wind';   // selected power source + build-out lead time (yr)
-// tf=peak inference TFLOPS · stk=HBM stacks/package · prod=TSMC packaging (M GPUs/yr) · hbm=stack supply (M/yr)
+// tf=peak TFLOPS (PFLOPS×1000) · tdp=package draw kW · stk=HBM stacks/package · gpw=GPUs per CoWoS wafer · prod=derived in compute() · ramp=ramping up
 const CHIPS=[
-  {key:'H100', tf:3958,  stk:6, prod:23, hbm:40},  // 6×HBM3 (mature),  ~26-28/wafer → 22-24 M/yr
-  {key:'B200', tf:9000,  stk:8, prod:5,  hbm:40},  // 8×HBM3E (mature), ~8-10/wafer → 4.8-6.0 M/yr
-  {key:'Rubin',tf:50000, stk:8, prod:2,  hbm:2},   // 8×HBM4 (new, scarce), ~4-6/wafer → 1.5-2.5 M/yr
+  {key:'Hopper',          tf:3900,   tdp:0.7, stk:6,  gb:141,  gpw:24},               // H100/H200, 3.9 PF FP8, 141GB HBM3 — mature, high volume
+  {key:'Blackwell',       tf:14000,  tdp:1.0, stk:8,  gb:192,  gpw:9},                // B100/B200, 14 PF FP4, 192GB HBM3e — mature
+  {key:'Blackwell Ultra', tf:30000,  tdp:1.4, stk:8,  gb:288,  gpw:8},                // B300/GB300, 30 PF FP4, 288GB HBM3e — shipping
+  {key:'Rubin',           tf:50000,  tdp:1.8, stk:8,  gb:288,  gpw:7,  ramp:true},    // Rubin GPU, 50 PF FP4, 288GB HBM4 22TB/s — ramping
+  {key:'Rubin Ultra',     tf:100000, tdp:2.3, stk:16, gb:1024, gpw:2.5,ramp:true},    // Rubin Ultra GPU, ~100 PF, 1TB HBM4e ~32TB/s, 2.3kW — ramping
+  {key:'Feynman',         tf:200000, tdp:4.5, stk:16, gb:2048, gpw:2.5,ramp:true},    // Feynman GPU, ~200 PF, ~2TB, optical (CPO) — ramping
 ];
-const PROD0={H100:23,B200:5,Rubin:2};       // packaging defaults (for reset)
-const HBM0={H100:40,B200:40,Rubin:2};       // HBM stack-supply defaults (for reset)
+const COWOS0_WAFERS=2.1, NVCOWOS0=60;   // TSMC CoWoS default: 2027 estimate, 60% to NVIDIA
+const HBM0_WAFERS=9.1;   // global HBM supply default (M wafers/yr, 2027 estimate), for reset
 const GS_BASE=5, GS_MULT=24;            // Goldman: 5 → 120 qt/mo (24×)
+const HBM_GB_PER_WAFER=1000;            // net usable HBM capacity per DRAM wafer (~9,000 Gb good die, after stacking yield)
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 let DEMAND={base:5,mult:24};
 
@@ -300,11 +425,23 @@ function fmtGPU(n){
   return Math.round(n).toLocaleString();
 }
 function fmtStk(n){ return (n/1e6).toFixed(1)+' M'; }
+function fmtTpw(v){ return v>=10?Math.round(v).toLocaleString():parseFloat(v.toFixed(1)); }  // tokens/sec per watt
+function fmtGB(gb){   // readable GB-derived scale
+  if(gb>=1e9) return (gb/1e9).toFixed(2)+' EB';
+  if(gb>=1e6) return (gb/1e6).toFixed(1)+' PB';
+  if(gb>=1e3) return (gb/1e3).toFixed(1)+' TB';
+  return Math.round(gb).toLocaleString()+' GB';
+}
+function fmtGBraw(gb){ // explicit GB count
+  if(gb>=1e9) return (gb/1e9).toFixed(2)+' billion GB';
+  if(gb>=1e6) return (gb/1e6).toFixed(1)+' million GB';
+  return Math.round(gb).toLocaleString()+' GB';
+}
 
 function compute(){
   // ---- Section 1: demand (single growth dial)
   const base = 5;                            // fixed 2026 baseline, qt/month (Goldman's implied start)
-  const mult = parseFloat($('mult').value);
+  const mult = clampMult(parseFloat($('mult_num').value)||MULT_MIN);
   const inShare = parseFloat($('inshare').value)/100;
   const qtMonth = base*mult;                 // quadrillion tokens / month, 2030
   const total = qtMonth*1e15/30;             // tokens / day
@@ -313,7 +450,6 @@ function compute(){
   DEMAND={base,mult};
 
   const isv=+$('inshare').value;
-  $('v_mult').textContent = mult.toFixed(1)+'×';
   $('v_inshare').textContent = 'In '+isv+'% · Out '+(100-isv)+'%';
   $('o_total').textContent = fmtTok(total);
   $('o_cagr').textContent = '+'+cagr.toFixed(0)+'% / yr';
@@ -321,7 +457,7 @@ function compute(){
   $('o_out').textContent = fmtTokShort(output);
 
   // ---- Section 2: compute
-  const active = parseFloat($('params').value)*1e9;
+  const active = Math.max(0.01,parseFloat($('params_num').value)||0.5)*1e9;
   const fpt = 2*active;
   const tflops = selTF;
   const mfu = parseFloat($('mfu').value)/100;
@@ -331,34 +467,58 @@ function compute(){
   const totGpu = infGpu/infShare;
   const trainGpu = totGpu-infGpu;
 
-  // the packaging slider drives the SELECTED chip's rate (tuning is remembered per chip)
   const selChip = CHIPS.find(c=>Math.abs(c.tf-tflops)<1) || CHIPS[2];
-  selChip.prod = parseFloat($('gpuprod').value);
-  selChip.hbm = parseFloat($('hbmprod').value);
+  // CoWoS packaging model: wafers/yr → NVIDIA share → per-chip GPU/yr
+  const cowosWafers = parseFloat($('cowosprod').value);     // total CoWoS M wafers/yr
+  const nvCowosShare = parseFloat($('nvcowosse').value)/100;
+  const nvCowosWafers = cowosWafers * nvCowosShare;         // NVIDIA's CoWoS M wafers/yr
+  CHIPS.forEach(c => { c.prod = nvCowosWafers * c.gpw; }); // derive prod (M GPUs/yr) for every chip
+  const cowosGpuPerYr = selChip.prod * 1e6;                // GPUs/yr for selected chip
+  const hbmWafers = parseFloat($('hbmprod').value);          // global HBM supply, M wafers/yr
+  const nvShare = parseFloat($('nvshare').value)/100;        // fraction of global HBM allocated to NVIDIA
+  const hbmYield = parseFloat($('hbmyield').value)/100;      // HBM stacking success rate
+  const nvWafers = hbmWafers*nvShare;                        // NVIDIA's HBM wafers/yr
+  const nvHbmGB = nvWafers*hbmYield*1e6*HBM_GB_PER_WAFER;   // NVIDIA usable HBM, GB/yr
 
   const isr=+$('infshare').value;
-  $('v_params').textContent = (+$('params').value).toLocaleString()+' B';
   $('v_mfu').textContent = $('mfu').value+'%';
   $('v_infshare').textContent = 'Inference '+isr+'% · Training '+(100-isr)+'%';
-  $('v_gpuprod').textContent = $('gpuprod').value+' M';
-  $('v_hbmprod').textContent = $('hbmprod').value+' M';
+  $('o_tsmc_gpuyr').textContent = fmtGPU(cowosGpuPerYr)+' /yr';
   $('o_totalgpu').textContent = fmtGPU(totGpu);
   $('o_split').textContent = fmtGPU(infGpu)+' + '+fmtGPU(trainGpu);
+  const hbmGB = totGpu*selChip.gb;                       // HBM demand (GB) for the selected chip's fleet
+  $('o_hbmneed').textContent = fmtGB(hbmGB);
+  $('o_hbmper').textContent = selChip.gb.toLocaleString()+' GB/GPU · '+fmtGBraw(hbmGB);
+  // NVIDIA's HBM wafers → how many of the SELECTED GPU they can equip per year
+  const hbmGpuPerYr = nvHbmGB/selChip.gb;
+  $('o_hbmgpuyr').textContent = fmtGPU(hbmGpuPerYr)+' /yr';
+  // per-resource build time = demand ÷ supply (years), binding one highlighted
+  const fmtYr = y => y<1?(y*12).toFixed(1)+' mo':y.toFixed(1)+' yr';
+  const selGy = totGpu/cowosGpuPerYr, selHy = totGpu/hbmGpuPerYr;
+  $('o_gpubuild').textContent = fmtYr(selGy); $('o_gpubuild').className = 'v'+(selGy>=selHy?' cbind-gpu':'');
+  $('o_hbmbuild').textContent = fmtYr(selHy); $('o_hbmbuild').className = 'v'+(selHy>selGy?' cbind-hbm':'');
 
   // per-accelerator fleet, derived HBM, and time to build (each chip uses its own packaging rate)
   let sel='Rubin', selBy=0, selHbmBound=false;
-  let rows='<tr><th>Chip</th><th>GPUs</th><th>HBM stacks</th><th>Build</th><th>Limited by</th></tr>';
+  let rows='<tr><th>Chip</th><th>GPUs</th><th>HBM</th><th>Tok/s·W</th><th>Build</th><th>Limit</th></tr>';
   CHIPS.forEach(c=>{
     const pg=c.tf*1e12*86400*mfu/fpt;
     const tg=(total/pg)/infShare, st=tg*c.stk;
-    const gy=tg/(c.prod*1e6), hy=st/(c.hbm*1e6), by=Math.max(gy,hy), hbmBound=hy>=gy;
+    const tpw=(c.tf*1e12*mfu/fpt)/(c.tdp*1000);    // tokens/sec per watt
+    const gy=tg/(c.prod*1e6), hy=(tg*c.gb)/nvHbmGB, by=Math.max(gy,hy), hbmBound=hy>=gy;
     const isSel=Math.abs(c.tf-tflops)<1; if(isSel){ sel=c.key; selBy=by; selHbmBound=hbmBound; }
     const bt=by<1?(by*12).toFixed(1)+' mo':by.toFixed(1)+' yr';
     const lim=hbmBound?'<span class="cbind-hbm">HBM</span>':'<span class="cbind-gpu">GPU</span>';
-    rows+='<tr class="'+(isSel?'sel':'')+'"><td>'+c.key+'</td><td>'+fmtGPU(tg)+'</td><td>'+
-      fmtStk(st)+'</td><td>'+bt+'</td><td>'+lim+'</td></tr>';
+    const nm=c.key+(c.ramp?' <span class="rampmark">ramp</span>':'');
+    rows+='<tr class="'+(isSel?'sel':'')+'"><td>'+nm+'</td><td>'+fmtGPU(tg)+'</td><td>'+
+      fmtStk(st)+'</td><td>'+fmtTpw(tpw)+'</td><td>'+bt+'</td><td>'+lim+'</td></tr>';
   });
   $('o_chiptable').innerHTML=rows;
+  // per-card tokens/watt line (depends on active params + MFU)
+  document.querySelectorAll('#chipsel button').forEach(b=>{
+    const c=CHIPS.find(c=>c.tf===+b.dataset.tf), el=b.querySelector('.tpw');
+    if(c&&el) el.textContent=fmtTpw((c.tf*1e12*mfu/fpt)/(c.tdp*1000))+' tok/s·W';
+  });
   $('o_chipname').textContent=sel;
   $('o_buildnote').innerHTML='Build time = the slower of TSMC packaging vs HBM stacking '+
     '(<span class="cbind-hbm">HBM-limited</span> / <span class="cbind-gpu">GPU-limited</span>).';
@@ -366,14 +526,9 @@ function compute(){
   // ---- Section 3: power
   const tdp=parseFloat($('tdp').value), ghShare=parseFloat($('ghshare').value)/100;
   const powerGW=totGpu*tdp/ghShare/1e6;
-  const energyTWh=powerGW*8.76;
   $('v_tdp').textContent=tdp.toFixed(1)+' kW';
   $('v_ghshare').textContent=$('ghshare').value+'%';
   $('o_power').textContent=powerGW.toFixed(1)+' GW';
-  $('o_energy').textContent=Math.round(energyTWh)+' TWh/yr';
-  $('o_reactors').textContent='~'+Math.round(powerGW)+' reactors';
-  $('o_usload').textContent=(100*powerGW/480).toFixed(1)+'%';
-  $('o_dc').textContent='+'+(100*powerGW/41).toFixed(0)+'%';
   const pwrStr=selPwrYr<1?Math.round(selPwrYr*12)+' months':selPwrYr+' yr';
   $('o_pwrname').textContent=selPwrName;
   $('o_pwrtime').textContent='~'+pwrStr;
@@ -395,6 +550,39 @@ function compute(){
   $('o_verdict').innerHTML=txt+' &nbsp;·&nbsp; demand <b>'+fmtTokShort(total)+'/day</b> → <b>'+
     fmtGPU(totGpu)+'</b> '+sel+' GPUs → <b>'+powerGW.toFixed(1)+' GW</b>, powered via '+selPwrName+
     ' (~'+pwrStr+' to build out).';
+
+  // ---- Section 4: market cap
+  const mc_ru = parseFloat($('mc_ru_units').value)*1e6;
+  const mc_fy = parseFloat($('mc_fy_units').value)*1e6;
+  const mc_ru_asp = parseFloat($('mc_ru_asp').value)*1e3;
+  const mc_fy_asp = parseFloat($('mc_fy_asp').value)*1e3;
+  const mc_nv_rmult = parseFloat($('mc_nv_rmult').value);
+  const mc_nv_margin = parseFloat($('mc_nv_margin').value)/100;
+  const mc_nv_pe = parseFloat($('mc_nv_pe').value);
+  const mc_hbm_pgb = parseFloat($('mc_hbm_pgb').value);
+  const mc_hbm_nvsh = parseFloat($('mc_hbm_nvsh').value)/100;
+  const mc_hbm_ps = parseFloat($('mc_hbm_ps').value);
+
+  const nvGpuRev = mc_ru*mc_ru_asp + mc_fy*mc_fy_asp;
+  const nvTotRev = nvGpuRev * mc_nv_rmult;
+  const nvNetIncome = nvTotRev * mc_nv_margin;
+  const nvMktCap = nvNetIncome * mc_nv_pe;
+
+  const ruChip = CHIPS.find(c=>c.tf===100000);
+  const fyChip = CHIPS.find(c=>c.tf===200000);
+  const nvHbmSpend = (mc_ru*(ruChip?.gb||1024) + mc_fy*(fyChip?.gb||2048)) * mc_hbm_pgb;
+  const totHbmRev = nvHbmSpend / mc_hbm_nvsh;
+  const hbmMktCap = totHbmRev * mc_hbm_ps;
+
+  const fmtUSD = v => v>=1e12 ? '$'+(v/1e12).toFixed(1)+'T' : '$'+Math.round(v/1e9)+'B';
+  $('mc_o_nv_gpurev').textContent = fmtUSD(nvGpuRev)+' / yr';
+  $('mc_o_nv_totrev').textContent = fmtUSD(nvTotRev)+' / yr';
+  $('mc_o_margin_pct').textContent = $('mc_nv_margin').value;
+  $('mc_o_nv_income').textContent = fmtUSD(nvNetIncome)+' / yr';
+  $('mc_o_nv_mktcap').textContent = fmtUSD(nvMktCap);
+  $('mc_o_hbm_nvrev').textContent = fmtUSD(nvHbmSpend)+' / yr';
+  $('mc_o_hbm_totrev').textContent = fmtUSD(totHbmRev)+' / yr';
+  $('mc_o_hbm_mktcap').textContent = fmtUSD(hbmMktCap);
 
   drawChart(curP);
 }
@@ -530,8 +718,6 @@ document.querySelectorAll('#chipsel button').forEach(b=>{
   b.onclick=()=>{
     document.querySelectorAll('#chipsel button').forEach(x=>x.classList.remove('on'));
     b.classList.add('on'); selTF=+b.dataset.tf; $('tdp').value=b.dataset.tdp;
-    const cc=CHIPS.find(c=>c.tf===selTF);
-    if(cc){ $('gpuprod').value=cc.prod; $('hbmprod').value=cc.hbm; }
     compute();
   };
 });
@@ -547,20 +733,43 @@ document.querySelectorAll('#powersel button').forEach(b=>{
 function preset(p){
   const set=(id,v)=>{$(id).value=v;};
   set('inshare',95); set('infshare',65);
-  set('params',500); selTF=9000;
-  CHIPS.forEach(c=>{c.prod=PROD0[c.key];c.hbm=HBM0[c.key];}); set('gpuprod',PROD0.B200); set('hbmprod',HBM0.B200);
-  set('tdp',1.0); set('ghshare',41);
-  document.querySelectorAll('#chipsel button').forEach(x=>x.classList.toggle('on',x.dataset.tf==='9000'));
+  setParams(500); selTF=100000;
+  set('cowosprod',COWOS0_WAFERS); set('nvcowosse',NVCOWOS0); set('hbmprod',HBM0_WAFERS); set('nvshare',60); set('hbmyield',50);
+  set('tdp',2.3); set('ghshare',41);
+  document.querySelectorAll('#chipsel button').forEach(x=>x.classList.toggle('on',x.dataset.tf==='100000'));
   selPwrYr=1.5; selPwrName='Solar + Wind';
   document.querySelectorAll('#powersel button').forEach(x=>x.classList.toggle('on',x.dataset.yr==='1.5'));
-  const cfg={ low:{mult:10,mfu:50}, gs:{mult:24,mfu:50}, up:{mult:40,mfu:50} }[p];
-  set('mult',cfg.mult); set('mfu',cfg.mfu);
+  const cfg={ low:{mult:10,mfu:50}, gs:{mult:24,mfu:50}, up:{mult:40,mfu:50}, bull:{mult:100,mfu:50}, extreme:{mult:1000,mfu:50} }[p];
+  setMult(cfg.mult); set('mfu',cfg.mfu);
   compute(); animateDemand();
 }
 
-ids.forEach(id=>{
-  $(id).addEventListener('input',compute);
-  if(id==='mult') $(id).addEventListener('change',animateDemand);
+ids.forEach(id=>{ $(id).addEventListener('input',compute); });
+
+// multiplier slider (log-scaled) ↔ typeable number box stay in sync
+$('mult').addEventListener('input',()=>{
+  $('mult_num').value = fmtMult(sliderPosToMult(parseFloat($('mult').value)));
+  compute();
+});
+$('mult').addEventListener('change',animateDemand);
+$('mult_num').addEventListener('input',()=>{
+  const m=parseFloat($('mult_num').value); if(isNaN(m)) return;
+  $('mult').value = multToSliderPos(clampMult(m));
+  compute();
+});
+$('mult_num').addEventListener('change',()=>{   // commit: clamp + animate
+  setMult(parseFloat($('mult_num').value)||MULT_MIN); compute(); animateDemand();
+});
+
+// active params slider ↔ typeable number box stay in sync
+$('params').addEventListener('input',()=>{ $('params_num').value=$('params').value; compute(); });
+$('params_num').addEventListener('input',()=>{
+  const p=parseFloat($('params_num').value); if(isNaN(p)) return;
+  $('params').value=Math.min(PARAM_SMAX,Math.max(PARAM_SMIN,p)); compute();
+});
+$('params_num').addEventListener('change',()=>{   // commit: default if blank/invalid
+  let p=parseFloat($('params_num').value); if(isNaN(p)||p<=0) p=500;
+  setParams(p); compute();
 });
 window.addEventListener('resize',()=>drawChart(curP));
 compute(); animateDemand();
