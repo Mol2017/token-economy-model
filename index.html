@@ -350,18 +350,45 @@
         <span class="val"><input type="number" id="mc_hbm_nvsh" min="10" max="100" step="5" value="60"> %</span></div></div>
       <div class="ctrl"><div class="row"><label>HBM co. P / S</label>
         <span class="val"><input type="number" id="mc_hbm_ps" min="1" max="30" step="0.5" value="10"></span></div></div>
+
+      <div class="grp">Optical module companies assumptions</div>
+      <div class="ctrl"><div class="row"><label>OSFP per Rubin Ultra GPU</label>
+        <span class="val"><input type="number" id="mc_ru_osfp" min="0" max="64" step="0.5" value="2.5"></span></div></div>
+      <div class="ctrl"><div class="row"><label>OSFP ASP ($)</label>
+        <span class="val"><input type="number" id="mc_ru_osfp_asp" min="10" max="5000" step="50" value="1000"></span></div></div>
+      <div class="ctrl"><div class="row"><label>ELSFP per Feynman GPU</label>
+        <span class="val"><input type="number" id="mc_el_mods" min="1" max="256" step="1" value="20"></span></div></div>
+      <div class="ctrl"><div class="row"><label>ELSFP ASP ($)</label>
+        <span class="val"><input type="number" id="mc_el_asp" min="10" max="2000" step="10" value="200"></span></div></div>
+      <div class="ctrl"><div class="row"><label>Optical module co. P / S</label>
+        <span class="val"><input type="number" id="mc_el_ps" min="1" max="30" step="0.5" value="10"></span></div></div>
     </div>
     <div class="outputs">
       <div class="olabel"><span class="dtag" style="background:rgba(74,222,128,.16);color:var(--ok)">NVIDIA</span> est. 2030 market cap</div>
       <div class="orow"><span class="k">GPU revenue</span><span class="v" id="mc_o_nv_gpurev"></span></div>
       <div class="orow"><span class="k">Est. total revenue</span><span class="v" id="mc_o_nv_totrev"></span></div>
       <div class="orow"><span class="k">Net income (<span id="mc_o_margin_pct">60</span>% margin)</span><span class="v" id="mc_o_nv_income"></span></div>
-      <div class="big" id="mc_o_nv_mktcap" style="color:var(--ok)"></div>
+      <div style="display:flex;align-items:baseline;gap:12px">
+        <div class="big" id="mc_o_nv_mktcap" style="color:var(--ok)"></div>
+        <span style="font-size:13px;color:var(--dim)">vs ~$5.1T (mid 2026)</span>
+      </div>
 
       <div class="olabel" style="margin-top:20px"><span class="dtag sup">HBM companies</span> est. 2030 combined market cap</div>
       <div class="orow"><span class="k">NVIDIA HBM spend</span><span class="v" id="mc_o_hbm_nvrev"></span></div>
       <div class="orow"><span class="k">Global HBM market</span><span class="v" id="mc_o_hbm_totrev"></span></div>
-      <div class="big" id="mc_o_hbm_mktcap" style="color:var(--gold)"></div>
+      <div style="display:flex;align-items:baseline;gap:12px">
+        <div class="big" id="mc_o_hbm_mktcap" style="color:var(--gold)"></div>
+        <span style="font-size:13px;color:var(--dim)">vs ~$3.6T (Micron + Samsung + SK Hynix, mid 2026)</span>
+      </div>
+
+      <div class="olabel" style="margin-top:20px"><span class="dtag" style="background:rgba(167,139,250,.16);color:#a78bfa">Optical module</span> est. 2030 combined market cap</div>
+      <div class="orow"><span class="k">Rubin Ultra OSFP revenue</span><span class="v" id="mc_o_ru_osfp_rev"></span></div>
+      <div class="orow"><span class="k">Feynman ELSFP revenue</span><span class="v" id="mc_o_el_rev"></span></div>
+      <div class="orow"><span class="k">Total optical revenue</span><span class="v" id="mc_o_el_totrev"></span></div>
+      <div style="display:flex;align-items:baseline;gap:12px">
+        <div class="big" id="mc_o_el_mktcap" style="color:#a78bfa"></div>
+        <span style="font-size:13px;color:var(--dim)">vs ~$142B (COHR + LITE, mid 2026)</span>
+      </div>
     </div>
   </div>
 </div>
@@ -379,7 +406,9 @@ Actuals 2023–25 (approx): <a href="https://a16z.com/state-of-ai/">a16z / OpenR
 <script>
 const $ = id => document.getElementById(id);
 const ids = ['inshare','mfu','infshare','cowosprod','nvcowosse','hbmprod','nvshare','hbmyield','tdp','ghshare',
-  'mc_ru_units','mc_fy_units','mc_ru_asp','mc_fy_asp','mc_nv_rmult','mc_nv_margin','mc_nv_pe','mc_hbm_pgb','mc_hbm_nvsh','mc_hbm_ps'];
+  'mc_ru_units','mc_fy_units','mc_ru_asp','mc_fy_asp','mc_nv_rmult','mc_nv_margin','mc_nv_pe',
+  'mc_hbm_pgb','mc_hbm_nvsh','mc_hbm_ps',
+  'mc_ru_osfp','mc_ru_osfp_asp','mc_el_mods','mc_el_asp','mc_el_ps'];
 // multiplier: log-scaled slider (1..1000) + typeable number box
 const MULT_MIN=1, MULT_MAX=1000, MULT_LOG=Math.log10(MULT_MAX)-Math.log10(MULT_MIN);
 const sliderPosToMult = pos => Math.pow(10, Math.log10(MULT_MIN)+(pos/1000)*MULT_LOG);
@@ -574,12 +603,26 @@ function compute(){
   const totHbmRev = nvHbmSpend / mc_hbm_nvsh;
   const hbmMktCap = totHbmRev * mc_hbm_ps;
 
+  const mc_ru_osfp     = parseFloat($('mc_ru_osfp').value);
+  const mc_ru_osfp_asp = parseFloat($('mc_ru_osfp_asp').value);
+  const mc_el_mods     = parseFloat($('mc_el_mods').value);
+  const mc_el_asp      = parseFloat($('mc_el_asp').value);
+  const mc_el_ps       = parseFloat($('mc_el_ps').value);
+  const ruOsfpRev = mc_ru * mc_ru_osfp * mc_ru_osfp_asp;
+  const fyElsfpRev = mc_fy * mc_el_mods * mc_el_asp;
+  const elTotRev = ruOsfpRev + fyElsfpRev;
+  const elMktCap = elTotRev * mc_el_ps;
+
   const fmtUSD = v => v>=1e12 ? '$'+(v/1e12).toFixed(1)+'T' : '$'+Math.round(v/1e9)+'B';
   $('mc_o_nv_gpurev').textContent = fmtUSD(nvGpuRev)+' / yr';
   $('mc_o_nv_totrev').textContent = fmtUSD(nvTotRev)+' / yr';
   $('mc_o_margin_pct').textContent = $('mc_nv_margin').value;
   $('mc_o_nv_income').textContent = fmtUSD(nvNetIncome)+' / yr';
   $('mc_o_nv_mktcap').textContent = fmtUSD(nvMktCap);
+  $('mc_o_ru_osfp_rev').textContent = fmtUSD(ruOsfpRev)+' / yr';
+  $('mc_o_el_rev').textContent = fmtUSD(fyElsfpRev)+' / yr';
+  $('mc_o_el_totrev').textContent = fmtUSD(elTotRev)+' / yr';
+  $('mc_o_el_mktcap').textContent = fmtUSD(elMktCap);
   $('mc_o_hbm_nvrev').textContent = fmtUSD(nvHbmSpend)+' / yr';
   $('mc_o_hbm_totrev').textContent = fmtUSD(totHbmRev)+' / yr';
   $('mc_o_hbm_mktcap').textContent = fmtUSD(hbmMktCap);
